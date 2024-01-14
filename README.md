@@ -28,7 +28,7 @@ Tython is a form to implement cool **features** from other languages such as **K
   - PEP 8 won't hold us back !!!
 
 ## How to use it?
-     pip install tython
+     pip install tython-toolkit
 
 ## Examples
 
