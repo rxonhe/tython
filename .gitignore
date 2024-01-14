@@ -1,2 +1,5 @@
 /tython.iml
 /.idea/
+/dist/
+/build/
+/tython.egg-info/
