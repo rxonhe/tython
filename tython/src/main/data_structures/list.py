@@ -2,5 +2,5 @@ class List(list):
     ...
 
 
-def list_off(*args):
+def list_of(*args):
     return List(args)
