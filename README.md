@@ -2,7 +2,7 @@
 
 ## What is Tython?
 
-Tython is a form to implement cool features from other languages such as Kotlin, into Python.
+Tython is a form to implement cool **features** from other languages such as **Kotlin**, into **Python**.
 
 ## What features?
 
