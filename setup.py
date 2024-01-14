@@ -19,7 +19,7 @@ setup(
     license="MIT",
     author="Rafael Choinhet",
     author_email="choinhet@gmail.com",
-    description="Tython is a form to implement cool **features** from other languages such as **Kotlin**, into **Python**.",
+    description="Tython is a form to implement cool features from other languages such as Kotlin, into Python.",
     long_description=readme,
     long_description_content_type="text/markdown",
     classifiers=[
