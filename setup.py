@@ -2,7 +2,7 @@ import sys
 
 from setuptools import setup, find_packages
 
-VERSION = "0.0.1"
+VERSION = "0.0.2"
 
 with open("README.md", "r") as fh:
     readme = fh.read()
@@ -19,7 +19,7 @@ setup(
     license="MIT",
     author="Rafael Choinhet",
     author_email="choinhet@gmail.com",
-    description="Tython is a form to implement cool features from other languages such as Kotlin, into Python.",
+    description="Tython goal is to implement cool features from other languages such as Kotlin, into Python.",
     long_description=readme,
     long_description_content_type="text/markdown",
     classifiers=[
