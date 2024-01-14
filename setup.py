@@ -2,7 +2,7 @@ import sys
 
 from setuptools import setup, find_packages
 
-VERSION = "0.0.0"
+VERSION = "0.0.1"
 
 with open("README.md", "r") as fh:
     readme = fh.read()
