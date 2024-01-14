@@ -33,6 +33,7 @@ class ConfigReader:
             origin = origin[key]
         return origin
 
+    # Interaction with flask-context-manager - Can be used as a Bean
     @staticmethod
     def start(context_manager, bean):
         ...

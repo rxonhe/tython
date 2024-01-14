@@ -15,7 +15,7 @@ class DataHolder:
 
     def offer(self, *pairs: tuple[T, T]):
         """
-        Offer pairs of key and value to the message.
+        Offer pairs of key and value to the data holder.
 
         Example:
          data_holder.offer(
