@@ -12,7 +12,7 @@ if sys.version_info.major != 3 and sys.version_info.minor < 10:
     sys.exit("'Tython' requires Python >= 3.10!")
 
 setup(
-    name="tython",
+    name="tython-toolkit",
     version=VERSION,
     packages=find_packages(),
     url="https://github.com/rxonhe/tython",
