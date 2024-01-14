@@ -2,7 +2,7 @@
 
 ## What is Tython?
 
-Tython goal to implement cool **features** from other languages such as **Kotlin**, into **Python**.
+Tython goal is to implement cool **features** from other languages such as **Kotlin**, into **Python**.
 
 ## What features?
 
