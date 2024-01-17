@@ -217,12 +217,6 @@ class List(list):
     def __eq__(self, other):
         return super
 
-    def __repr__(self):
-        return super
-
-    def __str__(self):
-        return super
-
 
 # Instantiation
 
