@@ -1,16 +1,17 @@
 import os
+from functools import cached_property
 from typing import Optional
 
-from dynamic_response_package.definitions import ROOT_DIR
+from tython import ROOT_DIR
 
 
 class Path(str):
 
-    def __init__(self, path):
+    def __init__(self, path: str):
         """
         :param path: Relative path from content root
         """
-        self.path = os.path.join(ROOT_DIR, path.removeprefix("/"))
+        self.path = path
 
     def write_text(self, text):
         with open(self.path, "w") as f:
@@ -45,6 +46,18 @@ class Path(str):
             json_obj = None
         return json_obj
 
+    def read_py(self):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(self._get_module_name_from_path, self.path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    @cached_property
+    def _get_module_name_from_path(self):
+        base_name = os.path.basename(self.path)
+        return os.path.splitext(base_name)[0]
+
     def write_json(self, json_obj):
         import json
         with open(self.path, "w") as f:
@@ -58,8 +71,25 @@ class Path(str):
     def delete(self):
         os.remove(self.path)
 
+    def prefix(self, prefix):
+        return Path(os.path.join(prefix, str(self.path)))
+
+    @property
+    def exists(self):
+        return os.path.exists(self.path)
+
     def __str__(self):
         return self.path
 
     def __repr__(self):
         return self.path
+
+
+class InternalPath(Path):
+
+    def __init__(self, path: str):
+        """
+        :param path: Relative path from content root
+        """
+        super().__init__(path)
+        self.path = os.path.join(ROOT_DIR, path.removeprefix("/"))
