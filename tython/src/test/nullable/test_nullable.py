@@ -24,6 +24,7 @@ class MyCustomTestClass:
     none_bool_attr: Nullable[bool] = Nullable(bool)
 
     assigned_attr: Nullable[str] = Nullable(str)
+
     subclass_attr: Nullable[MyCustomSubClass] = MyCustomSubClass()
     subclass_none_attr: Nullable[MyCustomSubClass] = Nullable(MyCustomSubClass)
 
@@ -50,7 +51,12 @@ class TestNullable(unittest.TestCase):
     def test_assert_subclass_access(self):
         # Subclass access
         self.assertIsInstance(self.test_class.subclass_attr, MyCustomSubClass)
-        self.assertIsNone(self.test_class.subclass_none_attr.str_none_attr)
+        self.assertEqual(self.test_class.subclass_none_attr.str_none_attr, None)
+
+        # Direct instantiation test
+        custom_init_class = MyCustomTestClass(subclass_none_attr=MyCustomSubClass()).subclass_none_attr
+        self.assertEqual(custom_init_class.str_none_attr, None)
+        self.assertEqual(custom_init_class.str_attr, "custom string")
 
         # Subclass attrs
         self.assertEqual(self.test_class.subclass_attr.str_attr, "custom string")
