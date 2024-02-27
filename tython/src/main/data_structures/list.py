@@ -4,6 +4,8 @@ from functools import reduce
 from itertools import chain
 from typing import Any, TYPE_CHECKING
 
+from tython.src.main.data_structures.placeholder import Placeholder
+
 if TYPE_CHECKING:
     from tython.src.main.data_structures.dict import Dict
     from tython.src.main.data_structures.set import Set
@@ -13,6 +15,8 @@ class List(list):
 
     # Base functions =============================================
     def map(self, fun) -> List:
+        if isinstance(fun, Placeholder):
+            return List([fun.eval(it) for it in self])
         return List(map(fun, self))
 
     def filter(self, fun) -> List:
