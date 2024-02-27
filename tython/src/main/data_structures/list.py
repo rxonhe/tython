@@ -16,10 +16,12 @@ class List(list):
     # Base functions =============================================
     def map(self, fun) -> List:
         if isinstance(fun, Placeholder):
-            return List([fun.eval(it) for it in self])
+            return List(map(fun.eval, self))
         return List(map(fun, self))
 
     def filter(self, fun) -> List:
+        if isinstance(fun, Placeholder):
+            return List(filter(fun.eval, self))
         return List(filter(fun, self))
 
     def filter_none(self) -> List:
