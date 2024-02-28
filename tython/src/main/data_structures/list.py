@@ -32,7 +32,7 @@ class List(list):
     def filter_none(self) -> List[T]:
         return List(filter(lambda it: it is not None, self))
 
-    def fold(self, fun: Callable[[T], Any], initial_value=None) -> Any:
+    def fold(self, fun: Callable, initial_value=None) -> Any:
         if initial_value is None:
             return reduce(self.eval(fun), self)
         return reduce(self.eval(fun), self, initial_value)
@@ -107,7 +107,8 @@ class List(list):
         return self.map_not_none(self.eval(fun)).map_to_set(lambda it: it)
 
     def map_not_none_indexed(self, fun: Callable[[int, T], Any]) -> List:
-        return self.filter_none().map_indexed(lambda index, value: (index, self.eval(fun)(index, value))).filter_none()
+        filtered_indexed = List(enumerate(self)).filter(lambda it: it[1] is not None)
+        return filtered_indexed.map(lambda value: self.eval(fun)(value[0], value[1])).filter_none()
 
     def map_not_none_indexed_to_dict(self, fun: Callable[[int, T], Any]) -> "Dict":
         return self.map_not_none_indexed(self.eval(fun)).map_to_dict(lambda it: it)
@@ -228,12 +229,6 @@ class List(list):
             if self.any(lambda it: not isinstance(it, list_type)):
                 raise TypeError(f"List contains elements that are not of type {list_type}")
         return self
-
-    def __hash__(self):
-        return super
-
-    def __eq__(self, other):
-        return super
 
 
 # Instantiation

@@ -12,6 +12,7 @@ class TestList(unittest.TestCase):
         self.integer_list = list_of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
         self.list_with_none = list_of(1, 2, 3, None, 4, 5, 6, None, 8, 9, None)
         self.list_with_none_edges = list_of(None, 1, 2, 3, None, 4, 5, 6, None, 8, 9, None)
+        self.composed_list = list_of(list_of("123"), list_of("45"))
 
     def test_list_of(self):
         list_a = [1, 2, 3]
@@ -47,10 +48,15 @@ class TestList(unittest.TestCase):
         functional_folded_list = self.integer_list.fold(lambda it, it2: it + it2, 10)
         self.assertEqual(folded_list, functional_folded_list)
 
+    def test_flatten(self):
+        flattened_list = self.composed_list.flatten()
+        expected = list_of("123", "45")
+        self.assertEqual(expected, flattened_list)
+
     def test_flat_map(self):
-        string_list = list_of("123", "45")
-        flattened_list = string_list.flat_map(lambda it: list(it))
-        self.assertEqual(self.small_list.map(str), flattened_list)
+        expected_result = list_of(90, 246)
+        flattened_list = self.composed_list.flat_map(lambda it: it.map(lambda it: int(it) * 2))
+        self.assertEqual(expected_result, flattened_list)
 
     def test_nested_map(self):
         nested_list = list_of(list_of(1, 2), list_of(3, 4))
@@ -90,13 +96,13 @@ class TestList(unittest.TestCase):
         self.assertEqual(list_of(1, 2, 3, 4, 5, 6), self.small_list.add(6))
 
     def test_add_all(self):
-        self.assertEqual(list_of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), self.small_list.add_all(self.integer_list))
+        self.assertEqual(list_of(1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10), self.small_list.add_all(self.integer_list))
 
     def test_remove(self):
-        self.assertEqual(list_of(1, 2, 3, 4, 5), self.integer_list.remove(6))
+        self.assertEqual(list_of(1, 2, 3, 4, 5, 7, 8, 9, 10), self.integer_list.remove(6))
 
     def test_remove_all(self):
-        self.assertEqual(list_of(1, 2, 3, 4, 5), self.integer_list.remove_all(self.integer_list))
+        self.assertEqual(list_of(6, 7, 8, 9, 10), self.integer_list.remove_all(self.small_list))
 
     def test_length(self):
         self.assertEqual(5, self.small_list.length())
@@ -105,7 +111,7 @@ class TestList(unittest.TestCase):
         self.assertEqual({1: 1, 2: 2, 3: 3}, self.small_list.map_to_dict(lambda it: (it, it)))
 
     def test_map_to_set(self):
-        self.assertEqual({1, 2, 3}, self.small_list.map_to_set(lambda it: it))
+        self.assertEqual({1, 2, 3, 4, 5}, self.small_list.map_to_set(lambda it: it))
 
     def test_map_not_none(self):
         self.assertEqual(list_of(1, 2, 3, 4, 5, 6, 8, 9), self.list_with_none.map_not_none(lambda it: it))
@@ -114,7 +120,7 @@ class TestList(unittest.TestCase):
         self.assertEqual({1: 1, 2: 2, 3: 3, 4: 4, 5: 5}, self.list_with_none.map_not_none_to_dict(lambda it: (it, it)))
 
     def test_map_not_none_to_set(self):
-        self.assertEqual({1, 2, 3, 4, 5}, self.list_with_none.map_not_none_to_set(lambda it: it))
+        self.assertEqual({1, 2, 3, 4, 5, 6, 8, 9}, self.list_with_none.map_not_none_to_set(lambda it: it))
 
     def test_map_not_none_indexed(self):
         self.assertEqual(list_of((0, 1), (1, 2), (2, 3), (4, 4), (5, 5), (6, 6), (8, 8), (9, 9)), self.list_with_none.map_not_none_indexed(lambda index, value: (index, value)))

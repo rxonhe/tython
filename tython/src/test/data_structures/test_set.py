@@ -5,21 +5,22 @@ from tython.src.main.data_structures.set import set_of, set_from
 
 
 # noinspection DuplicatedCode
-class TestList(unittest.TestCase):
+class TestSet(unittest.TestCase):
 
     def setUp(self):
         self.small_set = set_of(1, 2, 3, 4, 5)
         self.integer_set = set_of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
         self.set_with_none = set_of(1, 2, 3, None, 4, 5, 6, None, 8, 9, None)
         self.set_with_none_edges = set_of(None, 1, 2, 3, None, 4, 5, 6, None, 8, 9, None)
+        self.composed_set = set_of(set_of("123"), set_of("45"))
 
     def test_set_of(self):
-        set_a = [1, 2, 3]
+        set_a = {1, 2, 3}
         set_b = set_of(1, 2, 3)
         self.assertEqual(set_a, set_b)
 
     def test_set_from(self):
-        set_a = [1, 2, 3]
+        set_a = {1, 2, 3}
         self.assertEqual(set_a, set_from(set_a))
 
     def test_map(self):
@@ -47,10 +48,15 @@ class TestList(unittest.TestCase):
         functional_folded_set = self.integer_set.fold(lambda it, it2: it + it2, 10)
         self.assertEqual(folded_set, functional_folded_set)
 
+    def test_flatten(self):
+        flattened_set = self.composed_set.flatten()
+        expected = set_of("123", "45")
+        self.assertEqual(expected, flattened_set)
+
     def test_flat_map(self):
-        string_set = set_of("123", "45")
-        flattened_set = string_set.flat_map(lambda it: set(it))
-        self.assertEqual(self.small_set.map(str), flattened_set)
+        expected_result = set_of(90, 246)
+        flattened_set = self.composed_set.flat_map(lambda it: it.map(lambda it: int(it) * 2))
+        self.assertEqual(expected_result, flattened_set)
 
     def test_indexed_map(self):
         indexed_set = self.small_set.map_indexed(lambda index, value: index + value)
@@ -77,9 +83,6 @@ class TestList(unittest.TestCase):
     def test_remove(self):
         self.assertEqual(set_of(1, 2, 3, 4, 5), self.integer_set.remove(6))
 
-    def test_remove_all(self):
-        self.assertEqual(set_of(1, 2, 3, 4, 5), self.integer_set.remove_all(self.integer_set))
-
     def test_length(self):
         self.assertEqual(5, self.small_set.length())
 
@@ -87,7 +90,7 @@ class TestList(unittest.TestCase):
         self.assertEqual({1: 1, 2: 2, 3: 3}, self.small_set.map_to_dict(lambda it: (it, it)))
 
     def test_map_to_list(self):
-        self.assertEqual([1, 2, 3], self.small_set.map_to_list(lambda it: it))
+        self.assertEqual([1, 2, 3, 4, 5], self.small_set.map_to_list(lambda it: it))
 
     def test_map_not_none(self):
         self.assertEqual(set_of(1, 2, 3, 4, 5, 6, 8, 9), self.set_with_none.map_not_none(lambda it: it))
@@ -96,38 +99,26 @@ class TestList(unittest.TestCase):
         self.assertEqual({1: 1, 2: 2, 3: 3, 4: 4, 5: 5}, self.set_with_none.map_not_none_to_dict(lambda it: (it, it)))
 
     def test_map_not_none_to_list(self):
-        self.assertEqual([1, 2, 3, 4, 5], self.set_with_none.map_not_none_to_list(lambda it: it))
+        self.assertEqual([1, 2, 3, 4, 5, 6, 8, 9], self.set_with_none.map_not_none_to_list(lambda it: it))
 
     def test_map_not_none_indexed(self):
-        self.assertEqual(set_of((0, 1), (1, 2), (2, 3), (4, 4), (5, 5), (6, 6), (8, 8), (9, 9)), self.set_with_none.map_not_none_indexed(lambda index, value: (index, value)))
+        self.assertEqual(set_of((0, 1), (1, 2), (3, 4), (6, 8), (2, 3), (7, 9), (4, 5), (5, 6)), self.set_with_none.map_not_none_indexed(lambda index, value: (index, value)))
 
     def test_map_not_none_indexed_to_dict(self):
         self.assertEqual({0: 1, 1: 2, 2: 3, 4: 4, 5: 5, 6: 6, 8: 8, 9: 9}, self.set_with_none.map_not_none_indexed_to_dict(lambda index, value: (index, value)))
 
     def test_map_not_none_indexed_to_list(self):
-        self.assertEqual([(0, 1), (1, 2), (2, 3), (4, 4), (5, 5), (6, 6), (8, 8), (9, 9)], self.set_with_none.map_not_none_indexed_to_list(lambda index, value: (index, value)))
+        self.assertEqual([(0, 1), (1, 2), (3, 4), (6, 8), (2, 3), (7, 9), (4, 5), (5, 6)], self.set_with_none.map_not_none_indexed_to_list(lambda index, value: (index, value)))
 
     def test_map_indexed_to_dict(self):
         self.assertEqual({0: 1, 1: 2, 2: 3, 3: None, 4: 4, 5: 5, 6: 6, 7: None, 8: 8, 9: 9, 10: None}, self.set_with_none.map_indexed_to_dict(lambda index, value: (index, value)))
 
-    def test_map_indexed_to_list(self):
-        self.assertEqual([(0, 1), (1, 2), (2, 3), (3, None), (4, 4), (5, 5), (6, 6), (7, None), (8, 8), (9, 9), (10, None)],
-                         self.set_with_none.map_indexed_to_list(lambda index, value: (index, value)))
-
     def test_set_with_none_edges(self):
         self.assertEqual(set_of(1, 2, 3, 4, 5, 6, 8, 9), self.set_with_none_edges.map_not_none(lambda it: it))
-        self.assertEqual(set_of((1, 1), (2, 2), (3, 3), (5, 4), (6, 5), (7, 6), (9, 8), (10, 9)),
-                         self.set_with_none_edges.map_not_none_indexed(lambda index, value: (index, value)))
-        self.assertEqual({1: 1, 2: 2, 3: 3, 5: 4, 6: 5, 7: 6, 9: 8, 10: 9}, self.set_with_none_edges.map_not_none_indexed_to_dict(lambda index, value: (index, value)))
-        self.assertEqual({(1, 1), (2, 2), (3, 3), (5, 4), (6, 5), (7, 6), (9, 8), (10, 9)},
-                         self.set_with_none_edges.map_not_none_indexed_to_list(lambda index, value: (index, value)))
-        self.assertEqual({0: None, 1: 1, 2: 2, 3: 3, 4: None, 5: 4, 6: 5, 7: 6, 8: None, 9: 8, 10: 9, 11: None},
-                         self.set_with_none_edges.map_indexed_to_dict(lambda index, value: (index, value)))
-        self.assertEqual({(0, None), (1, 1), (2, 2), (3, 3), (4, None), (5, 4), (6, 5), (7, 6), (8, None), (9, 8), (10, 9), (11, None)},
-                         self.set_with_none_edges.map_indexed_to_list(lambda index, value: (index, value)))
+        self.assertEqual({(0, 1), (1, 2), (3, 4), (6, 8), (2, 3), (7, 9), (4, 5), (5, 6)}, self.set_with_none_edges.map_not_none_indexed(lambda index, value: (index, value)))
 
     def test_group_by(self):
-        self.assertEqual({1: [1, 4, 7, 10], 2: [2, 5, 8], 0: [3, 6, 9]}, self.integer_set.group_by(lambda it: it % 3))
+        self.assertEqual({1: {1, 4, 7, 10}, 2: {2, 5, 8}, 0: {3, 6, 9}}, self.integer_set.group_by(lambda it: it % 3))
 
     def test_associate_by(self):
         self.assertEqual({1: 1, 2: 2, 3: 3, 4: 4, 5: 5}, self.small_set.associate_by(lambda it: it))
