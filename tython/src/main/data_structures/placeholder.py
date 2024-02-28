@@ -1,15 +1,22 @@
 from __future__ import annotations
 
 from functools import reduce
-from typing import Optional, List, Callable
+from typing import Optional, List, Callable, TypeVar, Type
+
+T = TypeVar("T")
 
 
 class Placeholder:
-    def __init__(self, operations: Optional[List[EvalPair]] = None):
+
+    def __init__(self, operations: Optional[List[EvalPair]] = None, placeholder_type: [Type[T]] = None):
+        if placeholder_type:
+            self.placeholder_type = placeholder_type
         self.operations = operations
 
     def eval(self, value):
-        return reduce(lambda acc, operation: operation.eval(acc), self.operations, value)
+        if self.operations:
+            return reduce(lambda acc, operation: operation.eval(acc), self.operations, value)
+        return value
 
     def monad(self, operation, other=None):
         if self.operations is None:
@@ -138,6 +145,34 @@ class Placeholder:
 
     def __len__(self):
         return self.monad(lambda x: len(x))
+
+    @property
+    def iter(self):
+        """
+        Callable iter() alternative
+        """
+        return self.monad(lambda x: iter(x))
+
+    @property
+    def size(self):
+        """
+        Callable len() alternative
+        """
+        return self.monad(lambda x: len(x))
+
+    @property
+    def next(self):
+        """
+        Callable next() alternative
+        """
+        return self.monad(lambda x: next(x))
+
+    @property
+    def reversed(self):
+        """
+        Callable reversed() alternative
+        """
+        return self.monad(lambda x: reversed(x))
 
     def __bool__(self):
         return self.monad(lambda x: bool(x))
