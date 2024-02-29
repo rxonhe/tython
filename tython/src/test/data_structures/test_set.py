@@ -54,7 +54,7 @@ class TestSet(unittest.TestCase):
         self.assertEqual(expected, flattened_set)
 
     def test_flat_map(self):
-        expected_result = set_of(90, 246)
+        expected_result = set_of(246, 90)
         flattened_set = self.composed_set.flat_map(lambda it: it.map(lambda it: int(it) * 2))
         self.assertEqual(expected_result, flattened_set)
 

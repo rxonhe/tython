@@ -54,7 +54,7 @@ class TestList(unittest.TestCase):
         self.assertEqual(expected, flattened_list)
 
     def test_flat_map(self):
-        expected_result = list_of(90, 246)
+        expected_result = list_of(246, 90)
         flattened_list = self.composed_list.flat_map(lambda it: it.map(lambda it: int(it) * 2))
         self.assertEqual(expected_result, flattened_list)
 
